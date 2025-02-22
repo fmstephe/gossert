@@ -1,3 +1,7 @@
+// Copyright 2025 Francis Michael Stephens. All rights reserved.  Use of this
+// source code is governed by an MIT license that can be found in the LICENSE
+// file.
+
 // A small convenient package for adding runtime assertions to Go programs.
 //
 // By default all assertions are ignored and not executed. But if you include
