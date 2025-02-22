@@ -33,7 +33,7 @@ func GossertMsg(assert func() error) {
 	}
 }
 
-func GossertExitMsg(assert func() error) {
+func GossertMsgExit(assert func() error) {
 	if runAsserts {
 		if err := assert(); err != nil {
 			stack := debug.Stack()

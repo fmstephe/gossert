@@ -67,7 +67,7 @@ func demonstrateGossert() {
 //
 // When asserts are enabled and overflow is detected the program will exit
 func sum(x, y int) int {
-	gossert.GossertExitMsg(func() error {
+	gossert.GossertMsgExit(func() error {
 		return assertSum(x, y)
 	})
 	return x + y
