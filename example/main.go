@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"math"
@@ -17,9 +18,9 @@ var (
 // This tiny program demonstrates how we can enable
 func main() {
 	if gossert.WillRunAsserts() {
-		fmt.Println("The asserts will be running in this example")
+		fmt.Println("The asserts will be running in this example\n")
 	} else {
-		fmt.Println("The asserts are disabled and will not run. You can enable them by adding '-tags gossert' to your build command.")
+		fmt.Println("The asserts are disabled and will not run. You can enable them by adding '-tags gossert' to your build command\n")
 	}
 
 	flag.Parse()
@@ -66,7 +67,7 @@ func demonstrateGossert() {
 //
 // When asserts are enabled and overflow is detected the program will exit
 func sum(x, y int) int {
-	gossert.GossertExitMsg(func() (bool, string) {
+	gossert.GossertExitMsg(func() error {
 		return assertSum(x, y)
 	})
 	return x + y
@@ -76,7 +77,7 @@ func sum(x, y int) int {
 //
 // When asserts are enabled and overflow is detected the program will exit
 func subtract(x, y int) int {
-	gossert.GossertExit(func() bool {
+	gossert.GossertExit(func() error {
 		return assertSubtract(x, y)
 	})
 	return x - y
@@ -95,40 +96,42 @@ func multiply(x, y int) int {
 
 // A function which determines whether summing two int values will overflow It
 // returns false and a detailed message on assertion failure.
-func assertSum(x, y int) (bool, string) {
+func assertSum(x, y int) error {
 	sum := x + y
 
 	// Check for overflow
 	if x > 0 && sum < y {
-		return false, fmt.Sprintf("%d + %d overflows to %d\n", x, y, sum)
+		return fmt.Errorf("%d + %d overflows to %d\n", x, y, sum)
 	}
 
 	// Check for underflow
 	if x < 0 && sum > y {
-		return false, fmt.Sprintf("%d + %d underflows to %d\n", x, y, sum)
+		return fmt.Errorf("%d + %d underflows to %d\n", x, y, sum)
 	}
 
-	return true, ""
+	return nil
 }
+
+var subtractErr = errors.New("subtract assertion error")
 
 // A function which determines whether subtracting two int values will
 // underflow It returns false on assertion failure.
-func assertSubtract(x, y int) bool {
+func assertSubtract(x, y int) error {
 	difference := x - y
 
 	// Check for underflow
 	if y > 0 && difference > x {
 		fmt.Printf("%d - %d underflows to %d\n", x, y, difference)
-		return false
+		return subtractErr
 	}
 
 	// Check for overflow
 	if y < 0 && difference < x {
 		fmt.Printf("%d - %d overflows to %d\n", x, y, difference)
-		return false
+		return subtractErr
 	}
 
-	return true
+	return nil
 }
 
 // A function which determines whether multiplying two int values will

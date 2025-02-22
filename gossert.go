@@ -16,31 +16,28 @@ func Gossert(assert func()) {
 	}
 }
 
-func GossertExit(assert func() bool) {
+func GossertExit(assert func() error) {
 	if runAsserts {
-		ok := assert()
-		if !ok {
+		if err := assert(); err != nil {
 			os.Exit(-1)
 		}
 	}
 }
 
-func GossertMsg(assert func() (bool, string)) {
+func GossertMsg(assert func() error) {
 	if runAsserts {
-		ok, msg := assert()
-		if !ok {
+		if err := assert(); err != nil {
 			stack := debug.Stack()
-			fmt.Fprintf(os.Stderr, "gossert failure: %s\n%s\n", msg, stack)
+			fmt.Fprintf(os.Stderr, "gossert failure: %s\n%s\n", err, stack)
 		}
 	}
 }
 
-func GossertExitMsg(assert func() (bool, string)) {
+func GossertExitMsg(assert func() error) {
 	if runAsserts {
-		ok, msg := assert()
-		if !ok {
+		if err := assert(); err != nil {
 			stack := debug.Stack()
-			fmt.Fprintf(os.Stderr, "gossert failure: %s\n%s\n", msg, stack)
+			fmt.Fprintf(os.Stderr, "gossert failure: %s\n%s\n", err, stack)
 			os.Exit(-1)
 		}
 	}
