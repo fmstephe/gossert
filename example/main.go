@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	flagGossertExitMsg = flag.Bool("gossert-exit-msg", false, "Demonstrates the GossertExitMsg() function")
+	flagGossertMsgExit = flag.Bool("gossert-msg-exit", false, "Demonstrates the GossertMsgExit() function")
+	flagGossertMsg     = flag.Bool("gossert-msg", false, "Demonstrates the GossertMsg() function")
 	flagGossertExit    = flag.Bool("gossert-exit", false, "Demonstrates the GossertExit() function")
 	flagGossert        = flag.Bool("gossert", false, "Demonstrates the Gossert() function")
 )
@@ -24,14 +25,28 @@ func main() {
 	}
 
 	flag.Parse()
-	if *flagGossertExitMsg {
+	hasRun := false
+
+	if *flagGossertMsgExit {
 		demonstrateGossertExitMsg()
+		hasRun = true
+	}
+	if *flagGossertMsg {
+		demonstrateGossertMsg()
+		hasRun = true
 	}
 	if *flagGossertExit {
 		demonstrateGossertExit()
+		hasRun = true
 	}
 	if *flagGossert {
 		demonstrateGossert()
+		hasRun = true
+	}
+
+	if !hasRun {
+		fmt.Println("No flags provided. See available flags:\n")
+		flag.PrintDefaults()
 	}
 }
 
@@ -42,6 +57,17 @@ func demonstrateGossertExitMsg() {
 
 	// When asserts are enabled, this call will fail
 	fmt.Printf("summed to %d\n", sum(math.MaxInt, math.MaxInt))
+}
+
+func demonstrateGossertMsg() {
+	// These will print fine
+	fmt.Printf("exponential value to %g\n", positivePow(1, 2))
+	fmt.Printf("exponential value to %g\n", positivePow(2, 4))
+
+	// When asserts are enabled, this call will fail
+	fmt.Printf("exponential value to %g\n", positivePow(-2, 3))
+	fmt.Printf("exponential value to %g\n", positivePow(2, -4))
+	fmt.Printf("exponential value to %g\n", positivePow(2, 1024))
 }
 
 func demonstrateGossertExit() {
@@ -71,6 +97,16 @@ func sum(x, y int) int {
 		return assertSum(x, y)
 	})
 	return x + y
+}
+
+// Perform x^y. Only positive values are allowed.
+//
+// When asserts are enabled and overflow is detected the program will exit
+func positivePow(x, y float64) float64 {
+	gossert.GossertMsg(func() error {
+		return assertPositivePow(x, y)
+	})
+	return math.Pow(x, y)
 }
 
 // Subtract two int values, assert that the result does not overflow.
@@ -107,6 +143,33 @@ func assertSum(x, y int) error {
 	// Check for underflow
 	if x < 0 && sum > y {
 		return fmt.Errorf("%d + %d underflows to %d\n", x, y, sum)
+	}
+
+	return nil
+}
+
+// A function which determines whether subtracting two int values will
+// underflow It returns false on assertion failure.
+func assertPositivePow(x, y float64) error {
+	// Small valued exponents cannot cause overflow
+	if y >= 0 && y < 1 {
+		return nil
+	}
+
+	// We don't allow negative exponents
+	if y < 0 {
+		return fmt.Errorf("Found disallowed negative exponent %g", y)
+	}
+
+	// We don't allow negative base values
+	if x < 0 {
+		return fmt.Errorf("Found disallowed negative base %g", x)
+	}
+
+	val := math.Pow(x, y)
+
+	if math.IsInf(val, 0) {
+		return fmt.Errorf("%g^%g overflows to %g", x, y, val)
 	}
 
 	return nil
