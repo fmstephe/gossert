@@ -25,6 +25,16 @@ func GossertExit(assert func() bool) {
 	}
 }
 
+func GossertMsg(assert func() (bool, string)) {
+	if runAsserts {
+		ok, msg := assert()
+		if !ok {
+			stack := debug.Stack()
+			fmt.Fprintf(os.Stderr, "gossert failure: %s\n%s\n", msg, stack)
+		}
+	}
+}
+
 func GossertExitMsg(assert func() (bool, string)) {
 	if runAsserts {
 		ok, msg := assert()
