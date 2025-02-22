@@ -20,8 +20,6 @@ func GossertExit(assert func() bool) {
 	if runAsserts {
 		ok := assert()
 		if !ok {
-			stack := debug.Stack()
-			fmt.Fprintf(os.Stderr, "gossert failure: %s\n", stack)
 			os.Exit(-1)
 		}
 	}
