@@ -6,6 +6,10 @@ import (
 	"runtime/debug"
 )
 
+func WillRunAsserts() bool {
+	return runAsserts
+}
+
 func Gossert(assert func()) {
 	if runAsserts {
 		assert()
@@ -17,7 +21,7 @@ func GossertExit(assert func() bool) {
 		ok := assert()
 		if !ok {
 			stack := debug.Stack()
-			fmt.Fprintf(os.Stderr, "runssert failure: %s\n", stack)
+			fmt.Fprintf(os.Stderr, "gossert failure: %s\n", stack)
 			os.Exit(-1)
 		}
 	}
@@ -28,7 +32,7 @@ func GossertExitMsg(assert func() (bool, string)) {
 		ok, msg := assert()
 		if !ok {
 			stack := debug.Stack()
-			fmt.Fprintf(os.Stderr, "runssert failure: %s\n%s\n", msg, stack)
+			fmt.Fprintf(os.Stderr, "gossert failure: %s\n%s\n", msg, stack)
 			os.Exit(-1)
 		}
 	}
