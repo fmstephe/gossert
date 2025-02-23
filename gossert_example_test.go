@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func Example_Gossert() {
+func ExampleGossert() {
 	// Imagine these are function args being passed into a function
 	x := 10
 	y := -10
@@ -32,13 +32,14 @@ func Example_Gossert() {
 	// Output: 0
 }
 
-func Example_GossertMsg() {
+func ExampleGossertMsg() {
 	// Imagine these are function args being passed into a function
 	x := 10
 	y := -10
 
 	// By default the asserts are switched off
-	// But if we run these tests with '-tags gossert' the assertion will trigger a panic
+	// But if we run these tests with '-tags gossert' the assertion will
+	// print assertion failures to stderr
 	//
 	// When using GossertMsg we return an error on an assertion failure
 	//
@@ -59,13 +60,14 @@ func Example_GossertMsg() {
 	// Output: 0
 }
 
-func Example_GossertExit() {
+func ExampleGossertExit() {
 	// Imagine these are function args being passed into a function
 	x := 10
 	y := -10
 
 	// By default the asserts are switched off
-	// But if we run these tests with '-tags gossert' the assertion will trigger a panic
+	// But if we run these tests with '-tags gossert' the assertion will
+	// print information about an assertion failure and exit the program
 	//
 	// When using GossertExit we return an error on an assertion failure
 	//
@@ -91,13 +93,14 @@ func Example_GossertExit() {
 	// Output: 0
 }
 
-func Example_GossertMsgExit() {
+func ExampleGossertMsgExit() {
 	// Imagine these are function args being passed into a function
 	x := 10
 	y := -10
 
 	// By default the asserts are switched off
-	// But if we run these tests with '-tags gossert' the assertion will trigger a panic
+	// But if we run these tests with '-tags gossert' the assertion will
+	// print information about an assertion failure and exit the program
 	//
 	// When using GossertMsgExit we return an error on an assertion failure
 	//
