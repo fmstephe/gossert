@@ -23,9 +23,9 @@ var (
 // This tiny program demonstrates how we can enable
 func main() {
 	if gossert.WillRunAsserts() {
-		fmt.Println("The asserts will be running in this example\n")
+		fmt.Printf("The asserts will be running in this example\n\n")
 	} else {
-		fmt.Println("The asserts are disabled and will not run. You can enable them by adding '-tags gossert' to your build command\n")
+		fmt.Printf("The asserts are disabled and will not run. You can enable them by adding '-tags gossert' to your build command\n\n")
 	}
 
 	flag.Parse()
@@ -49,7 +49,7 @@ func main() {
 	}
 
 	if !hasRun {
-		fmt.Println("No flags provided. See available flags:\n")
+		fmt.Printf("No flags provided. See available flags:\n\n")
 		flag.PrintDefaults()
 	}
 }
@@ -141,12 +141,12 @@ func assertSum(x, y int) error {
 
 	// Check for overflow
 	if x > 0 && sum < y {
-		return fmt.Errorf("%d + %d overflows to %d\n", x, y, sum)
+		return fmt.Errorf("%d + %d overflows to %d", x, y, sum)
 	}
 
 	// Check for underflow
 	if x < 0 && sum > y {
-		return fmt.Errorf("%d + %d underflows to %d\n", x, y, sum)
+		return fmt.Errorf("%d + %d underflows to %d", x, y, sum)
 	}
 
 	return nil
@@ -162,12 +162,12 @@ func assertPositivePow(x, y float64) error {
 
 	// We don't allow negative exponents
 	if y < 0 {
-		return fmt.Errorf("Found disallowed negative exponent %g", y)
+		return fmt.Errorf("found disallowed negative exponent %g", y)
 	}
 
 	// We don't allow negative base values
 	if x < 0 {
-		return fmt.Errorf("Found disallowed negative base %g", x)
+		return fmt.Errorf("found disallowed negative base %g", x)
 	}
 
 	val := math.Pow(x, y)
@@ -179,7 +179,7 @@ func assertPositivePow(x, y float64) error {
 	return nil
 }
 
-var subtractErr = errors.New("subtract assertion error")
+var errSubtract = errors.New("subtract assertion error")
 
 // A function which determines whether subtracting two int values will
 // underflow It returns false on assertion failure.
@@ -189,13 +189,13 @@ func assertSubtract(x, y int) error {
 	// Check for underflow
 	if y > 0 && difference > x {
 		fmt.Printf("%d - %d underflows to %d\n", x, y, difference)
-		return subtractErr
+		return errSubtract
 	}
 
 	// Check for overflow
 	if y < 0 && difference < x {
 		fmt.Printf("%d - %d overflows to %d\n", x, y, difference)
-		return subtractErr
+		return errSubtract
 	}
 
 	return nil
